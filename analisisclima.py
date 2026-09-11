@@ -16,34 +16,36 @@ def separar_viento(campo_viento: str) -> tuple:
 #print(separar_viento("Calma"))
 #print(separar_viento("Noroeste  12")) 
 
-diccionario1= {}
-lineas_invalidas = 0
-with open("estado_tiempo20260910.txt", "r", encoding="latin-1") as archivo:
-   for linea in archivo:
-        linea = linea.strip()
-        campos = linea.split(";")
+def leer_observaciones(ruta:str)->dict:
+    observaciones= {}
+    lineas_invalidas = 0
+    with open("estado_tiempo20260910.txt", "r", encoding="latin-1") as archivo:
+        for linea in archivo:
+            linea = linea.strip()
+            campos = linea.split(";")
         
-        if len(campos) != 10:
-            lineas_invalidas += 1
-            continue 
+            if len(campos) != 10:
+                lineas_invalidas += 1
+                continue
+        
+            ciudad = campos[0].strip()
+            direccion, velocidad = separar_viento(campos[8]) # 8 son los campos en horizontal
+            datos_ciudad = {
+                "fecha": campos[1],
+                "hora": campos[2],
+                "condicion": campos[3],
+                "visibilidad": campos[4],
+                "temperatura": campos[5],
+                "sensacion_termica": campos[6],
+                "humedad": campos[7],
+                "direccion_viento": direccion,
+                "velocidad_viento": velocidad,
+                "presion": campos[9]
+            }
+            observaciones[ciudad] = datos_ciudad
+        return observaciones
+    
 
-
-        ciudad = campos[0].strip()
-        direccion, velocidad = separar_viento(campos[8]) # 8 son los campos en horizontal
-        datos_ciudad = {
-            "fecha": campos[1],
-            "hora": campos[2],
-            "condicion": campos[3],
-            "visibilidad": campos[4],
-            "temperatura": campos[5],
-            "sensacion_termica": campos[6],
-            "humedad": campos[7],
-            "direccion_viento": direccion,
-            "velocidad_viento": velocidad,
-            "presion": campos[9]
-        }
-        diccionario1[ciudad] = datos_ciudad
-
-# esto va afuera del with y del for, pero ejecuta una sola vez al final
-print(f"Ciudades leídas: {len(diccionario1)}")
-print(f"Líneas inválidas: {lineas_invalidas}")
+observaciones = leer_observaciones("estado_tiempo20260910.txt")
+print(f"Ciudades leídas: {len(observaciones)}")
+print(f"Observaciones: {observaciones}")
