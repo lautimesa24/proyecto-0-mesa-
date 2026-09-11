@@ -15,3 +15,8 @@ def separar_viento(campo_viento: str) -> tuple:
 #print(separar_viento("Sur  5"))
 #print(separar_viento("Calma"))
 #print(separar_viento("Noroeste  12")) 
+
+# lectura de linea por linea del archivo de texto:
+with open("estado_tiempo20260910.txt", "r", encoding="latin-1") as archivo:
+    for linea in archivo:
+        print(linea) 
