@@ -16,6 +16,13 @@ def separar_viento(campo_viento: str) -> tuple:
 #print(separar_viento("Calma"))
 #print(separar_viento("Noroeste  12")) 
 
+
+def convertir_sen_termica(valor: str):
+    if valor == "No se calcula": # 
+        return None # lo deje como none por que es  none por que es un dato que no esta y no hay forma de calcularlo como para dejarlo en 0. 
+    return float(valor)
+
+
 def leer_observaciones(ruta:str)->dict:
     observaciones= {}
     lineas_invalidas = 0
@@ -27,25 +34,30 @@ def leer_observaciones(ruta:str)->dict:
             if len(campos) != 10:
                 lineas_invalidas += 1
                 continue
-        
+            
             ciudad = campos[0].strip()
             direccion, velocidad = separar_viento(campos[8]) # 8 son los campos en horizontal
+            temperatura = float(campos[5])
+            sensacion_termica = convertir_sen_termica(campos[6].strip())
+            
             datos_ciudad = {
                 "fecha": campos[1],
                 "hora": campos[2],
                 "condicion": campos[3],
                 "visibilidad": campos[4],
-                "temperatura": campos[5],
-                "sensacion_termica": campos[6],
+                "temperatura": temperatura,
+                "sensacion_termica": sensacion_termica,
                 "humedad": campos[7],
                 "direccion_viento": direccion,
                 "velocidad_viento": velocidad,
                 "presion": campos[9]
             }
+            
             observaciones[ciudad] = datos_ciudad
+
         return observaciones
     
-
+#prueba para ver si anda
 observaciones = leer_observaciones("estado_tiempo20260910.txt")
-print(f"Ciudades leídas: {len(observaciones)}")
+#print(f"Ciudades leídas: {len(observaciones)}")
 print(f"Observaciones: {observaciones}")
