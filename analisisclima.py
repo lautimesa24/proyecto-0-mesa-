@@ -4,7 +4,7 @@
 # velocidad --> numero (a mi parecer seria 0 ya que  expresarlo con el 0 representaria la velocidad minima del viento, es decir, que no hay viento)
 def separar_viento(campo_viento: str) -> tuple:
     partes = campo_viento.split()
-
+    
     if partes[0] == "Calma":
         return ("Calma", 0)
     direccion = " ".join(partes[:-1]) # se toma todos los elementos excepto el último como dirección. 
@@ -74,4 +74,37 @@ def cantidad_ciudades_completas(observaciones: dict) -> int:
 print(f"Ciudades leídas: {len(observaciones)}")
 print(f"Ciudades completas: {cantidad_ciudades_completas(observaciones)}")
 
+# ------------------------------------------------------------------------------
+
+def temperatura_maxima(observaciones: dict) -> list:
+    maximo = None
+    
+    for ciudad, datos in observaciones.items(): # recorre el diccionario grande y cada vuelta la ciudad y los datos
+        temperatura = datos["temperatura"]
+        if maximo is None or temperatura > maximo: # si la temperatura es mayor que el maximo, se actualiza el maximo 
+            maximo = temperatura 
+
+    ciudades = []
+    for ciudad, datos in observaciones.items():
+        if datos["temperatura"] == maximo: # comparamos la temperatura de cada ciudad con el maximo encontrado
+            ciudades.append(ciudad) # lo agregamos a la lista de ciudades que tienen la temperatura maxima 
+
+    return ciudades 
+
+
+# ---------------------------------------------------------------------------
+def velocidad_viento_maxima(observaciones: dict) -> list:
+    maximo = None
+    
+    for ciudad, datos in observaciones.items(): # recorre el diccionario grande y cada vuelta la ciudad y los datos
+        velocidad = datos["velocidad_viento"] # se obtiene la velocidad del viento de cada ciudad
+        if maximo is None or velocidad > maximo: # si la velocidad es mayor que el maximo, se actualiza el maximo 
+            maximo = velocidad 
+
+    ciudades = []
+    for ciudad, datos in observaciones.items():
+        if datos["velocidad_viento"] == maximo: # comparamos la velocidad del viento de cada ciudad con el maximo encontrado
+            ciudades.append(ciudad) # lo agregamos a la lista de ciudades que tienen la velocidad del viento maxima
+
+    return ciudades 
 
