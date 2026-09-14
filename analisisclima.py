@@ -71,7 +71,10 @@ def cantidad_ciudades_completas(observaciones: dict) -> int:
             contador += 1
     return contador
 
-print(f"Ciudades leídas: {len(observaciones)}")
+def cantidad_ciudades(observaciones: dict) -> int:
+    return len(observaciones) # devuelve la cantidad de ciudades leidas.
+
+
 print(f"Ciudades completas: {cantidad_ciudades_completas(observaciones)}")
 
 # ------------------------------------------------------------------------------
@@ -91,20 +94,76 @@ def temperatura_maxima(observaciones: dict) -> list:
 
     return ciudades 
 
+def temperatura_minima(observaciones: dict) -> list:
+    # copiá temperatura_maxima entera y cambiá el > por
+    minimo = None
+    
+    for ciudad, datos in observaciones.items(): # recorre el diccionario grande y cada vuelta la ciudad y los datos
+        temperatura = datos["temperatura"]
+        if minimo is None or temperatura < minimo: # si la temperatura es menor que el minimo, se actualiza el minimo
+            minimo = temperatura 
+
+    ciudades = []
+    for ciudad, datos in observaciones.items():
+        if datos["temperatura"] == minimo: # comparamos la temperatura de cada ciudad con el minimo encontrado
+            ciudades.append(ciudad) # lo agregamos a la lista de ciudades que tienen la temperatura minima
+
+    return ciudades 
 
 # ---------------------------------------------------------------------------
+
+# esta funcion queda casi identica solo le cambie el nombre de la variable de temperatura a velocidad del viento, y el nombre de la funcion.
 def velocidad_viento_maxima(observaciones: dict) -> list:
     maximo = None
     
-    for ciudad, datos in observaciones.items(): # recorre el diccionario grande y cada vuelta la ciudad y los datos
-        velocidad = datos["velocidad_viento"] # se obtiene la velocidad del viento de cada ciudad
-        if maximo is None or velocidad > maximo: # si la velocidad es mayor que el maximo, se actualiza el maximo 
+    for ciudad, datos in observaciones.items():
+        velocidad = datos["velocidad_viento"] 
+        if maximo is None or velocidad > maximo: 
             maximo = velocidad 
 
     ciudades = []
     for ciudad, datos in observaciones.items():
-        if datos["velocidad_viento"] == maximo: # comparamos la velocidad del viento de cada ciudad con el maximo encontrado
-            ciudades.append(ciudad) # lo agregamos a la lista de ciudades que tienen la velocidad del viento maxima
+        if datos["velocidad_viento"] == maximo:
+            ciudades.append(ciudad) 
 
     return ciudades 
 
+
+def velocidad_viento_minima(observaciones: dict) -> list:
+    minimo = None
+    
+    for ciudad, datos in observaciones.items():
+        velocidad = datos["velocidad_viento"] 
+        if minimo is None or velocidad < minimo: 
+            minimo = velocidad 
+
+    ciudades = []
+    for ciudad, datos in observaciones.items():
+        if datos["velocidad_viento"] == minimo:
+            ciudades.append(ciudad) 
+
+    return ciudades 
+
+# def top_n_ciudades(observaciones: dict, campo: str, n: int, descendente: bool = True) -> list:
+  #  """Devuelve las n (por parámetro) ciudades ordenadas según 'campo', de mayor a menor
+   # (o al revés si descendente=False), en una lista. Reutilizable tanto para temperatura
+    #como para viento.""" 
+    
+    # preguntar al profe por que no se como hacerla.
+
+
+def mostrar_resumen(observaciones: dict) -> None:
+    print("=== RESUMEN OBSERVACIONES SMN ===")
+    print(f"Cantidad de ciudades leídas: {cantidad_ciudades(observaciones)}")
+    print(f"Ciudades con datos completos: {cantidad_ciudades_completas(observaciones)}")
+    print()
+    print(f"Temperatura máxima en: {temperatura_maxima(observaciones)}")
+    print(f"Temperatura mínima en: {temperatura_minima(observaciones)}")
+    print()
+    print(f"Viento máximo en: {velocidad_viento_maxima(observaciones)}")
+    print(f"Viento mínimo en: {velocidad_viento_minima(observaciones)}")
+    
+    
+
+observaciones = leer_observaciones("estado_tiempo20260910.txt")
+mostrar_resumen(observaciones) 
