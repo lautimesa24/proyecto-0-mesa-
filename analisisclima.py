@@ -144,12 +144,53 @@ def velocidad_viento_minima(observaciones: dict) -> list:
 
     return ciudades 
 
-# def top_n_ciudades(observaciones: dict, campo: str, n: int, descendente: bool = True) -> list:
-  #  """Devuelve las n (por parámetro) ciudades ordenadas según 'campo', de mayor a menor
-   # (o al revés si descendente=False), en una lista. Reutilizable tanto para temperatura
-    #como para viento.""" 
-    
-    # preguntar al profe por que no se como hacerla.
+
+# def top_n_ciudades lo converti a lista y ordene esas listas. 
+# aca busca primero el mas alto en cada ronda 
+def top_n_mayores(observaciones: dict, campo: str, n: int) -> list:
+    lista = []
+    for ciudad, datos in observaciones.items():
+        lista.append((ciudad, datos[campo]))
+
+    resultado = []
+
+    for _ in range(n):
+        if len(lista) == 0:
+            break
+
+        mejor_indice = 0
+        for i in range(1, len(lista)):
+            if lista[i][1] > lista[mejor_indice][1]:
+                mejor_indice = i
+
+        ciudad_elegida, valor_elegido = lista[mejor_indice]
+        resultado.append(ciudad_elegida)
+        lista.pop(mejor_indice)
+
+    return resultado
+
+# y este busca el mas bajo en cada ronda
+def top_n_menores(observaciones: dict, campo: str, n: int) -> list:
+    lista = []
+    for ciudad, datos in observaciones.items():
+        lista.append((ciudad, datos[campo]))
+
+    resultado = []
+
+    for _ in range(n):
+        if len(lista) == 0:
+            break
+
+        mejor_indice = 0
+        for i in range(1, len(lista)):
+            if lista[i][1] < lista[mejor_indice][1]:
+                mejor_indice = i
+
+        ciudad_elegida, valor_elegido = lista[mejor_indice]
+        resultado.append(ciudad_elegida)
+        lista.pop(mejor_indice)
+
+    return resultado
 
 
 def mostrar_resumen(observaciones: dict) -> None:
@@ -162,8 +203,17 @@ def mostrar_resumen(observaciones: dict) -> None:
     print()
     print(f"Viento máximo en: {velocidad_viento_maxima(observaciones)}")
     print(f"Viento mínimo en: {velocidad_viento_minima(observaciones)}")
+    print(f"Top 5 ciudades más cálidas: {top_n_mayores(observaciones, 'temperatura', 5)}")
+    print(f"Top 5 ciudades más frías: {top_n_menores(observaciones, 'temperatura', 5)}")
+    print(f"Top 5 ciudades con más viento: {top_n_mayores(observaciones, 'velocidad_viento', 5)}")
+    print(f"Top 5 ciudades con menos viento: {top_n_menores(observaciones, 'velocidad_viento', 5)}")
     
     
-
 observaciones = leer_observaciones("estado_tiempo20260910.txt")
 mostrar_resumen(observaciones) 
+
+
+
+
+
+
