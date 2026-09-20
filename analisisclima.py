@@ -60,10 +60,6 @@ def leer_observaciones(ruta:str)->dict:
 
     return observaciones
     
-# prueba para ver si anda
-observaciones = leer_observaciones("estado_tiempo20260910.txt")
-
-print(f"Observaciones: {observaciones}") 
 
 
 # agrego de funcion de cantidad de ciudades completas, es decir, que tengan sensacion termica calculada. 
@@ -79,7 +75,6 @@ def cantidad_ciudades(observaciones: dict) -> int:
     return len(observaciones) # devuelve la cantidad de ciudades leidas.
 
 
-print(f"Ciudades completas: {cantidad_ciudades_completas(observaciones)}")
 
 # ------------------------------------------------------------------------------
 
@@ -215,20 +210,21 @@ def mostrar_resumen(observaciones: dict) -> None:
 
 
 # ------
+
 if len(sys.argv) < 2:
     print("Error: falta indicar la ruta del archivo.")
     print("Uso: python analisisclima.py datos/observaciones_smn.txt")
     sys.exit(1)
-# para que no me salga error de indexacion cuando solo le paso el script de python analisisclima.py,
-# le agrego este bloque para que entre al if y me imprima que es lo que falta (en caso de que falte)
+        # para que no me salga error de indexacion cuando solo le paso el script de python analisisclima.py,
+        # le agrego este bloque para que entre al if y me imprima que es lo que falta (en caso de que falte)
+    
 
 
 # para llamarlo desde la terminal
-# python analisisclima.py estado_tiempo20260910.txt   
-ruta = sys.argv[1] # --> [1] es el primer argumento que se escribio, es decir que en este caso  es la ruta del archivo.
-observaciones = leer_observaciones(ruta)
-mostrar_resumen(observaciones)  
+# python analisisclima.py estado_tiempo20260910.txt 
+ruta = sys.argv[1]# --> [1] es el primer argumento que se escribio, es decir que en este caso  es la ruta del archivo.
 
+observaciones = leer_observaciones(ruta)
 
 # por si el archivo esta vacio, es decir len(observaciones) == 0
 if len(observaciones) == 0:
