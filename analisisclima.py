@@ -1,7 +1,6 @@
-#requerimiento:
-# separación del viento 
-# direccion--> texto 
-# velocidad --> numero (a mi parecer seria 0 ya que  expresarlo con el 0 representaria la velocidad minima del viento, es decir, que no hay viento)
+import sys
+#agrego de manejo de argumentos con sys
+
 def separar_viento(campo_viento: str) -> tuple:
     partes = campo_viento.split()
     
@@ -25,36 +24,41 @@ def convertir_sen_termica(valor: str):
 def leer_observaciones(ruta:str)->dict:
     observaciones= {}
     lineas_invalidas = 0
-    with open("estado_tiempo20260910.txt", "r", encoding="latin-1") as archivo:
-        for linea in archivo:
-            linea = linea.strip()
-            campos = linea.split(";")
+    try:      
+        with open(ruta, "r", encoding="latin-1") as archivo:
+            for linea in archivo:
+                linea = linea.strip()
+                campos = linea.split(";")
         
-            if len(campos) != 10:
-                lineas_invalidas += 1
-                continue
+                if len(campos) != 10:
+                    lineas_invalidas += 1
+                    continue
             
-            ciudad = campos[0].strip()
-            direccion, velocidad = separar_viento(campos[8]) # 8 son los campos en horizontal
-            temperatura = float(campos[5])
-            sensacion_termica = convertir_sen_termica(campos[6].strip())
+                ciudad = campos[0].strip()
+                direccion, velocidad = separar_viento(campos[8]) # 8 son los campos en horizontal
+                temperatura = float(campos[5])
+                sensacion_termica = convertir_sen_termica(campos[6].strip())
             
-            datos_ciudad = {
-                "fecha": campos[1],
-                "hora": campos[2],
-                "condicion": campos[3],
-                "visibilidad": campos[4],
-                "temperatura": temperatura,
-                "sensacion_termica": sensacion_termica,
-                "humedad": campos[7],
-                "direccion_viento": direccion,
-                "velocidad_viento": velocidad,
-                "presion": campos[9]
-            }
+                datos_ciudad = {
+                    "fecha": campos[1],
+                    "hora": campos[2],
+                    "condicion": campos[3],
+                    "visibilidad": campos[4],
+                    "temperatura": temperatura,
+                    "sensacion_termica": sensacion_termica,
+                    "humedad": campos[7],
+                    "direccion_viento": direccion,
+                    "velocidad_viento": velocidad,
+                    "presion": campos[9]
+                }
             
-            observaciones[ciudad] = datos_ciudad
+                observaciones[ciudad] = datos_ciudad
 
-        return observaciones
+    except FileNotFoundError:
+        print(f"Error: no se encontró el archivo '{ruta}'.")
+        sys.exit(1)
+
+    return observaciones
     
 # prueba para ver si anda
 observaciones = leer_observaciones("estado_tiempo20260910.txt")
@@ -208,12 +212,27 @@ def mostrar_resumen(observaciones: dict) -> None:
     print(f"Top 5 ciudades con más viento: {top_n_mayores(observaciones, 'velocidad_viento', 5)}")
     print(f"Top 5 ciudades con menos viento: {top_n_menores(observaciones, 'velocidad_viento', 5)}")
     
-    
-observaciones = leer_observaciones("estado_tiempo20260910.txt")
-mostrar_resumen(observaciones) 
 
 
+# ------
+if len(sys.argv) < 2:
+    print("Error: falta indicar la ruta del archivo.")
+    print("Uso: python analisisclima.py datos/observaciones_smn.txt")
+    sys.exit(1)
+# para que no me salga error de indexacion cuando solo le paso el script de python analisisclima.py,
+# le agrego este bloque para que entre al if y me imprima que es lo que falta (en caso de que falte)
 
 
+# para llamarlo desde la terminal
+# python analisisclima.py estado_tiempo20260910.txt   
+ruta = sys.argv[1] # --> [1] es el primer argumento que se escribio, es decir que en este caso  es la ruta del archivo.
+observaciones = leer_observaciones(ruta)
+mostrar_resumen(observaciones)  
 
 
+# por si el archivo esta vacio, es decir len(observaciones) == 0
+if len(observaciones) == 0:
+    print(f"Error: el archivo '{ruta}' está vacío o no tiene datos válidos.")
+    sys.exit(1)
+
+mostrar_resumen(observaciones)
