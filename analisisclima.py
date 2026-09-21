@@ -17,7 +17,7 @@ def separar_viento(campo_viento: str) -> tuple:
 
 
 def convertir_sen_termica(valor: str):
-    if valor == "No se calcula": # 
+    if valor == "" or valor == "No se calcula": # 
         return None # lo deje como none por que es  none por que es un dato que no esta y no hay forma de calcularlo como para dejarlo en 0. 
     return float(valor)
 
@@ -35,21 +35,44 @@ def leer_observaciones(ruta:str)->dict:
                     continue
             
                 ciudad = campos[0].strip()
-                direccion, velocidad = separar_viento(campos[8]) # 8 son los campos en horizontal
-                temperatura = float(campos[5])
+                
+                if ciudad == "":
+                    # si no hay un nombre de ciudad no se puede usar como clave asi que se cuenta como linea invalida, esto evita que se rompa el programaa
+                    lineas_invalidas += 1
+                    continue
+                
+                if campos[8].strip() == "":
+                    direccion, velocidad = None, None
+                else:
+                     direccion, velocidad = separar_viento(campos[8]) # 8 son los campos en horizontal
+                
+                temperatura = None # se sobrescribe por lo que pase en el if/else
+                
+                if campos[5].strip() == "":
+                    temperatura = None 
+                else:
+                    temperatura = float(campos[5]) 
                 sensacion_termica = convertir_sen_termica(campos[6].strip())
             
+                fecha = campos[1].strip() if campos[1].strip() != "" else None
+                hora = campos[2].strip() if campos[2].strip() != "" else None
+                condicion = campos[3].strip() if campos[3].strip() != "" else None
+                visibilidad = campos[4].strip() if campos[4].strip() != "" else None
+                humedad = campos[7].strip() if campos[7].strip() != "" else None
+                presion = campos[9].strip() if campos[9].strip() != "" else None
+            
+            
                 datos_ciudad = {
-                    "fecha": campos[1],
-                    "hora": campos[2],
-                    "condicion": campos[3],
-                    "visibilidad": campos[4],
+                    "fecha": fecha,
+                    "hora":hora,
+                    "condicion": condicion,
+                    "visibilidad": visibilidad,
                     "temperatura": temperatura,
                     "sensacion_termica": sensacion_termica,
-                    "humedad": campos[7],
+                    "humedad": humedad,
                     "direccion_viento": direccion,
                     "velocidad_viento": velocidad,
-                    "presion": campos[9]
+                    "presion": presion
                 }
             
                 observaciones[ciudad] = datos_ciudad
@@ -221,7 +244,7 @@ if len(sys.argv) < 2:
 
 
 # para llamarlo desde la terminal
-# python analisisclima.py estado_tiempo20260910.txt 
+#  python analisisclima.py datos\estado_tiempo20260910.txt 
 ruta = sys.argv[1]# --> [1] es el primer argumento que se escribio, es decir que en este caso  es la ruta del archivo.
 
 observaciones = leer_observaciones(ruta)
