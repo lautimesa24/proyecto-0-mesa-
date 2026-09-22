@@ -18,13 +18,14 @@ def separar_viento(campo_viento: str) -> tuple:
 
 def convertir_sen_termica(valor: str):
     if valor == "" or valor == "No se calcula": # 
-        return None # lo deje como none por que es  none por que es un dato que no esta y no hay forma de calcularlo como para dejarlo en 0. 
+        return None # lo deje como none por que es un dato que no esta y no hay forma de calcularlo como para dejarlo en 0. 
     return float(valor)
 
 def leer_observaciones(ruta:str)->dict:
     observaciones= {}
     lineas_invalidas = 0
-    try:      
+    try:
+              
         with open(ruta, "r", encoding="latin-1") as archivo:
             for linea in archivo:
                 linea = linea.strip()
@@ -52,10 +53,11 @@ def leer_observaciones(ruta:str)->dict:
                     temperatura = None 
                 else:
                     temperatura = float(campos[5]) 
+                    
                 sensacion_termica = convertir_sen_termica(campos[6].strip())
-            
-                fecha = campos[1].strip() if campos[1].strip() != "" else None
-                hora = campos[2].strip() if campos[2].strip() != "" else None
+                # campos[x].strip dentro del if es el valor que se va a guardar si la condicion es verdadera.  
+                fecha = campos[1].strip() if campos[1].strip() != "" else None # fecha va a valer esto campos[1].strip(), si campos[1].strip()es distino a vacio "" y si esta vacio fecha o cualquier otra cosa va a valer None. 
+                hora = campos[2].strip() if campos[2].strip() != "" else None # 
                 condicion = campos[3].strip() if campos[3].strip() != "" else None
                 visibilidad = campos[4].strip() if campos[4].strip() != "" else None
                 humedad = campos[7].strip() if campos[7].strip() != "" else None
@@ -84,7 +86,6 @@ def leer_observaciones(ruta:str)->dict:
     return observaciones
     
 
-
 # agrego de funcion de cantidad de ciudades completas, es decir, que tengan sensacion termica calculada. 
 def cantidad_ciudades_completas(observaciones: dict) -> int:
     contador = 0
@@ -96,7 +97,6 @@ def cantidad_ciudades_completas(observaciones: dict) -> int:
 
 def cantidad_ciudades(observaciones: dict) -> int:
     return len(observaciones) # devuelve la cantidad de ciudades leidas.
-
 
 
 # ------------------------------------------------------------------------------
@@ -191,6 +191,7 @@ def top_n_mayores(observaciones: dict, campo: str, n: int) -> list:
 
     return resultado
 
+
 # y este busca el mas bajo en cada ronda
 def top_n_menores(observaciones: dict, campo: str, n: int) -> list:
     lista = []
@@ -222,17 +223,14 @@ def mostrar_resumen(observaciones: dict) -> None:
     print()
     print(f"Temperatura máxima en: {temperatura_maxima(observaciones)}")
     print(f"Temperatura mínima en: {temperatura_minima(observaciones)}")
-    print()
     print(f"Viento máximo en: {velocidad_viento_maxima(observaciones)}")
     print(f"Viento mínimo en: {velocidad_viento_minima(observaciones)}")
     print(f"Top 5 ciudades más cálidas: {top_n_mayores(observaciones, 'temperatura', 5)}")
     print(f"Top 5 ciudades más frías: {top_n_menores(observaciones, 'temperatura', 5)}")
     print(f"Top 5 ciudades con más viento: {top_n_mayores(observaciones, 'velocidad_viento', 5)}")
     print(f"Top 5 ciudades con menos viento: {top_n_menores(observaciones, 'velocidad_viento', 5)}")
-    
 
 
-# ------
 
 if len(sys.argv) < 2:
     print("Error: falta indicar la ruta del archivo.")
@@ -244,14 +242,13 @@ if len(sys.argv) < 2:
 
 
 # para llamarlo desde la terminal
-#  python analisisclima.py datos\estado_tiempo20260910.txt 
+# python analisisclima.py datos\estado_tiempo20260910.txt 
 ruta = sys.argv[1]# --> [1] es el primer argumento que se escribio, es decir que en este caso  es la ruta del archivo.
-
 observaciones = leer_observaciones(ruta)
 
 # por si el archivo esta vacio, es decir len(observaciones) == 0
 if len(observaciones) == 0:
     print(f"Error: el archivo '{ruta}' está vacío o no tiene datos válidos.")
     sys.exit(1)
-
+    
 mostrar_resumen(observaciones)
