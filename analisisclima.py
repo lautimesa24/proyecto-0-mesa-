@@ -117,6 +117,22 @@ def cantidad_ciudades_completas(observaciones: dict) -> int:
 def cantidad_ciudades(observaciones: dict) -> int:
     return len(observaciones) # devuelve la cantidad de ciudades leidas.
 
+# nueva funcion añadida 
+
+def horarios_reportados(observaciones: dict) -> list:
+    """devuelve una lista de los horarios a los que las estaciones reportaron en la observación dada.
+    La lista tendrá horas en el formato string "HH:MM", será sin repetir y ordenadas de menor a mayor"""
+    horarios = set()  # el set es para que no se repitan solos
+
+    for ciudad, datos in observaciones.items():
+        fecha_y_hora = datos["fecha_y_hora"]
+        if fecha_y_hora is None:
+            continue  # si a esta ciudad le falta la fecha/hora, la salteamos
+
+        hora_texto = fecha_y_hora.strftime("%H:%M")  # formatea el datetime como "HH:MM"
+        horarios.add(hora_texto)
+
+    return sorted(horarios)  # sorted convierte el set en lista y de paso lo ordena
 
 # ------------------------------------------------------------------------------
 
@@ -248,6 +264,7 @@ def mostrar_resumen(observaciones: dict) -> None:
     print(f"Top 5 ciudades más frías: {top_n_menores(observaciones, 'temperatura', 5)}")
     print(f"Top 5 ciudades con más viento: {top_n_mayores(observaciones, 'velocidad_viento', 5)}")
     print(f"Top 5 ciudades con menos viento: {top_n_menores(observaciones, 'velocidad_viento', 5)}")
+    print(horarios_reportados(observaciones))
 
 
 
