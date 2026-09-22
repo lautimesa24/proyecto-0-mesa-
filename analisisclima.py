@@ -1,5 +1,12 @@
 import sys
 #agrego de manejo de argumentos con sys
+import datetime 
+
+MESES = {
+    "enero": 1, "febrero": 2, "marzo": 3, "abril": 4,
+    "mayo": 5, "junio": 6, "julio": 7, "agosto": 8,
+    "septiembre": 9, "octubre": 10, "noviembre": 11, "diciembre": 12
+}
 
 def separar_viento(campo_viento: str) -> tuple:
     partes = campo_viento.split()
@@ -10,10 +17,24 @@ def separar_viento(campo_viento: str) -> tuple:
     velocidad = float(partes[-1])
     return (direccion, velocidad)
 
-# prueba para ver si anda
-#print(separar_viento("Sur  5"))
-#print(separar_viento("Calma"))
-#print(separar_viento("Noroeste  12")) 
+def convertir_fecha_y_hora(campo_fecha: str, campo_hora: str):
+    """Combina los campos de fecha ('10-septiembre-2026') y hora ('14:00')
+    en un único objeto datetime.datetime. Si alguno de los dos falta, devuelve None."""
+    
+    
+    if campo_fecha.strip() == "" or campo_hora.strip() == "":
+        return None
+
+    dia_str, mes_str, anio_str = campo_fecha.strip().split("-")
+    mes_numero = MESES[mes_str.lower()]  # traducimos el nombre del mes a número
+
+    hora_str, minuto_str = campo_hora.strip().split(":")
+
+    return datetime.datetime(
+        int(anio_str), mes_numero, int(dia_str),
+        int(hora_str), int(minuto_str)
+    )
+    
 
 
 def convertir_sen_termica(valor: str):
@@ -56,17 +77,15 @@ def leer_observaciones(ruta:str)->dict:
                     
                 sensacion_termica = convertir_sen_termica(campos[6].strip())
                 # campos[x].strip dentro del if es el valor que se va a guardar si la condicion es verdadera.  
-                fecha = campos[1].strip() if campos[1].strip() != "" else None # fecha va a valer esto campos[1].strip(), si campos[1].strip()es distino a vacio "" y si esta vacio fecha o cualquier otra cosa va a valer None. 
-                hora = campos[2].strip() if campos[2].strip() != "" else None # 
-                condicion = campos[3].strip() if campos[3].strip() != "" else None
+                fecha_y_hora = convertir_fecha_y_hora(campos[1], campos[2])  
+                condicion = campos[3].strip() if campos[3].strip() != "" else None # esto va a valer esto campos[3].strip(), si campos[3].strip()es distino a vacio "" y si esta vacio fecha o cualquier otra cosa va a valer None.
                 visibilidad = campos[4].strip() if campos[4].strip() != "" else None
                 humedad = campos[7].strip() if campos[7].strip() != "" else None
                 presion = campos[9].strip() if campos[9].strip() != "" else None
             
             
                 datos_ciudad = {
-                    "fecha": fecha,
-                    "hora":hora,
+                    "fecha_y_hora": fecha_y_hora,
                     "condicion": condicion,
                     "visibilidad": visibilidad,
                     "temperatura": temperatura,
