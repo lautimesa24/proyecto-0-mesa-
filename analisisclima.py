@@ -1,4 +1,4 @@
-from lectura import leer_observaciones
+from lectura import leer_observaciones # MODULO AGREGADO 
 import sys 
 
 # agrego de funcion de cantidad de ciudades completas, es decir, que tengan sensacion termica calculada. 
@@ -174,7 +174,8 @@ if len(sys.argv) < 2:
         # le agrego este bloque para que entre al if y me imprima que es lo que falta (en caso de que falte)
     
 # para llamarlo desde la terminal
-# python analisisclima.py datos\estado_tiempo20260910.txt 
+# python analisisclima.py datos\estado_tiempo20260924.tx
+ 
 ruta = sys.argv[1]# --> [1] es el primer argumento que se escribio, es decir que en este caso  es la ruta del archivo.
 observaciones, lineas_invalidas, detalle_lineas_invalidas = leer_observaciones(ruta)
 

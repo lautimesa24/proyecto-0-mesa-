@@ -30,4 +30,4 @@ El programa tiene estas funcionalidades principales:
 
 Ejecutar el script desde la terminal pasando como argumento la ruta del archivo de texto:
 ```bash
-python analisisclima.py datos/estado_tiempo20260910.txt
+python analisisclima.py datos\estado_tiempo20260924.tx

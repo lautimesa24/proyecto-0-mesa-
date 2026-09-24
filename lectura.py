@@ -120,4 +120,7 @@ def leer_observaciones(ruta:str)->dict:
         print(f"Error: no se encontró el archivo '{ruta}'.")
         sys.exit(1)
 
-    return observaciones, lineas_invalidas, detalle_lineas_invalidas 
+    return observaciones, lineas_invalidas, detalle_lineas_invalidas  
+
+
+
