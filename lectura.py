@@ -46,9 +46,7 @@ def convertir_fecha_y_hora(campo_fecha: str, campo_hora: str):
         int(hora_str), int(minuto_str)
     )
     
-    
-    
-    
+
 def convertir_sen_termica(valor: str):
     if valor == "" or valor == "No se calcula": # 
         return None # lo deje como none por que es un dato que no esta y no hay forma de calcularlo como para dejarlo en 0. 
@@ -121,6 +119,5 @@ def leer_observaciones(ruta:str)->dict:
         sys.exit(1)
 
     return observaciones, lineas_invalidas, detalle_lineas_invalidas  
-
 
 
