@@ -230,7 +230,7 @@ def mostrar_resumen(observaciones: dict, lineas_invalidas: int, detalle_lineas_i
 
 if len(sys.argv) < 2:
     print("Error: falta indicar la ruta del archivo.")
-    print("Uso: python analisisclima.py datos/estado_tiempo20260924.txt")
+    print("Uso: smn.py")
     sys.exit(1)
 
 ruta = sys.argv[1]
