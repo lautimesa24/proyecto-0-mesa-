@@ -21,7 +21,7 @@ El programa tiene estas funcionalidades principales:
 1. Ingresar a la página oficial de descarga de datos del SMN: 
    [https://www.smn.gob.ar/descarga-de-datos](https://www.smn.gob.ar/descarga-de-datos)
 2. Descargar el archivo comprimido (`.rar`) correspondiente a **Observaciones actuales**.
-3. Descomprimir el archivo para obtener el archivo de texto plano (por ejemplo, `estado_tiempo20260910.txt`).
+3. Descomprimir el archivo para obtener el archivo de texto plano (por ejemplo, `estado_tiempo20260924.txt`).
 4. Guardar dicho archivo dentro de la carpeta **`datos/`** de este repositorio.
 
 ---
