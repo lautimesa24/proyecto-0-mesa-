@@ -51,6 +51,17 @@ def convertir_sen_termica(valor: str):
         return None  # dato que falta: no se puede reemplazar por 0
     return float(valor)
 
+# agregado de la función para detectar codificación 
+def detectar_codificacion(ruta: str) -> str:
+    """Devuelve 'utf-8' si el archivo se puede leer como utf-8, si no 'latin-1'."""
+    try:
+        with open(ruta, "r", encoding="utf-8") as archivo:
+            archivo.read()
+        return "utf-8"
+    except UnicodeDecodeError:
+        return "latin-1"
+
+
 
 def leer_observaciones(ruta: str):
     observaciones = {}
@@ -58,7 +69,9 @@ def leer_observaciones(ruta: str):
     detalle_lineas_invalidas = []
 
     try:
-        with open(ruta, "r", encoding="latin-1") as archivo:
+        codificacion = detectar_codificacion(ruta)
+        #print("codificación detectada:", codificacion) # para saber que codificación se detectó... 
+        with open(ruta, "r", encoding=codificacion) as archivo:
             for linea in archivo:
                 linea = linea.strip()
                 campos = linea.split(";")
@@ -243,4 +256,6 @@ if len(observaciones) == 0:
 mostrar_resumen(observaciones, lineas_invalidas, detalle_lineas_invalidas) 
 
 # para correrlo:
-# python analisisclima.py datos/estado_tiempo20260924.txt
+# python analisisclima.py datos/estado_tiempo20260924.txt 
+
+
