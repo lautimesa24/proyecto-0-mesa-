@@ -1,5 +1,8 @@
+import os
 import sys
+import json
 import datetime
+
 
 MESES = {
     "enero": 1, "febrero": 2, "marzo": 3, "abril": 4,
@@ -12,6 +15,7 @@ CAMPOS_ESPERADOS = [
     "temperatura", "sensacion_termica", "humedad", "viento", "presion"
 ]
 
+CARPETA_JSON = "obs_json"
 
 #  LECTURA 
 
@@ -213,6 +217,112 @@ def top_n_ciudades(observaciones: dict, campo: str, n: int, orden: str) -> list:
     return resultado
 
 
+# convertir a json 
+
+def observaciones_a_json(observaciones: dict) -> dict:
+    """Copia el diccionario pasando cada datetime a texto ISO 8601 sin segundos."""
+    resultado = {}
+    for ciudad, datos in observaciones.items():
+        copia = dict(datos)  # copia, para no modificar el diccionario original
+        if copia["fecha_y_hora"] is not None:
+            copia["fecha_y_hora"] = copia["fecha_y_hora"].isoformat(timespec="minutes")
+        resultado[ciudad] = copia
+    return resultado
+
+
+def ruta_json_de(ruta_txt: str) -> str:
+    nombre = os.path.basename(ruta_txt)            # estado_tiempo20260924.txt
+    nombre_sin_ext = os.path.splitext(nombre)[0]   # estado_tiempo20260924
+    return os.path.join(CARPETA_JSON, nombre_sin_ext + ".json")
+
+
+def mostrar_cantidades(observaciones: dict) -> None:
+    print(f"ciudades en el archivo: {cantidad_ciudades(observaciones)}")
+    print(f"ciudades informadas: {cantidad_ciudades_completas(observaciones)}")
+
+
+def convertir_txt_a_json(ruta_txt: str) -> None:
+    print("archivo del SMN, leyendo observaciones...")
+    observaciones, lineas_invalidas, detalle = leer_observaciones(ruta_txt)
+    if len(observaciones) == 0:
+        print("no se pudo completar: el archivo está vacío o no tiene datos válidos.")
+        return
+    print("lectura completada.")
+
+    print("archivo del SMN, convirtiendo a json...")
+    datos_json = observaciones_a_json(observaciones)
+    print("conversión completada.")
+
+    if not os.path.exists(CARPETA_JSON):
+        print(f"el directorio {CARPETA_JSON} no existe, creándolo...")
+        try:
+            os.makedirs(CARPETA_JSON)
+        except OSError:
+            print("no se pudo crear el directorio, no se guardó el json.")
+            return
+        print("directorio creado.")
+
+    ruta_salida = ruta_json_de(ruta_txt)
+    print(f"guardando {ruta_salida}...")
+    
+    try:
+        with open(ruta_salida, "w", encoding="utf-8") as archivo:
+            json.dump(datos_json, archivo, ensure_ascii=False, indent=2)
+    except OSError:
+        print("no se pudo guardar el archivo json.")
+        return
+    print("guardado completado.")
+
+    mostrar_cantidades(observaciones)
+    
+def procesar_json(ruta_json: str) -> None:
+    print("archivo json, leyendo...")
+    try:
+        with open(ruta_json, "r", encoding="utf-8") as archivo:
+            observaciones = json.load(archivo)
+    except FileNotFoundError:
+        print("no se pudo completar: el archivo no existe.")
+        return
+    except json.JSONDecodeError:
+        print("no se pudo completar: el archivo json está mal formado.")
+        return
+    print("lectura completada.")
+    mostrar_cantidades(observaciones)
+
+
+def contar_archivos(carpeta: str, extension: str) -> int:
+    if not os.path.isdir(carpeta):
+        return 0  # si la carpeta no existe, hay 0 archivos
+    contador = 0
+    for nombre in os.listdir(carpeta):
+        if nombre.endswith(extension):
+            contador += 1
+    return contador
+
+
+def main() -> None:
+    if len(sys.argv) > 2:
+        print("Error: se pasó más de un parámetro. No se hace nada.")
+        print("Uso: python smn.py datos/estado_tiempo20260924.txt")
+        return
+
+    if len(sys.argv) == 1:
+        print("No se indicó ningún archivo. Uso: python smn.py datos/estado_tiempo20260924.txt")
+        print(f"archivos .txt en datos/: {contar_archivos('datos', '.txt')}")
+        print(f"archivos .json en {CARPETA_JSON}/: {contar_archivos(CARPETA_JSON, '.json')}")
+        return
+
+    ruta = sys.argv[1]
+    if ruta.endswith(".txt"):
+        convertir_txt_a_json(ruta)
+    elif ruta.endswith(".json"):
+        procesar_json(ruta)
+    else:
+        print("Error: solo se aceptan archivos .txt del SMN o .json.")
+
+
+main()
+
 # parte de PRESENTACIÓN 
 
 def mostrar_resumen(observaciones: dict, lineas_invalidas: int, detalle_lineas_invalidas: list) -> None:
@@ -237,23 +347,6 @@ def mostrar_resumen(observaciones: dict, lineas_invalidas: int, detalle_lineas_i
     for campo, ciudades in faltantes.items():
         if len(ciudades) > 0:
             print(f"{campo}: faltan {len(ciudades)} ({', '.join(ciudades[:5])}{'...' if len(ciudades) > 5 else ''})")
-
-
-# PROGRAMA 
-
-if len(sys.argv) < 2:
-    print("Error: falta indicar la ruta del archivo.")
-    print("Uso: smn.py")
-    sys.exit(1)
-
-ruta = sys.argv[1]
-observaciones, lineas_invalidas, detalle_lineas_invalidas = leer_observaciones(ruta)
-
-if len(observaciones) == 0:
-    print(f"Error: el archivo '{ruta}' está vacío o no tiene datos válidos.")
-    sys.exit(1)
-
-mostrar_resumen(observaciones, lineas_invalidas, detalle_lineas_invalidas) 
 
 # para correrlo:
 # python analisisclima.py datos/estado_tiempo20260924.txt 
